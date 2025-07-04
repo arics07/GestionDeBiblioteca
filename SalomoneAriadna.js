@@ -57,7 +57,7 @@ function agregarLibro(id, titulo, autor, anio, genero){
                 genero: genero,
                 disponible: true
             });
-    console.log(libros);
+    console.log(`El libro ${titulo} del autor ${autor} fue agregado exitosamente con el id ${id}.`);
 };
 
 
@@ -177,8 +177,8 @@ function borrarLibro(id){
             libros.splice(indice, 1);
         };
 
+        console.log(`El libro con id ${id} (título: ${libroEncontrado.titulo}; autor: ${libroEncontrado.autor}) ha sido eliminado correctamente.`);
         return libroEncontrado;
-       //console.log(libros);
 
     } else {
         // Si no se encontró el libro con ese id, avisa por pantalla 
@@ -202,7 +202,7 @@ function registrarUsuario(nombre, email){
         librosPrestados: []
     };
     usuarios.push(nuevoUsuario);
-    //console.log(usuarios);
+    console.log(`El usuario ${nombre} se agregó satisfactoriamente con el id ${nuevoUsuario.id}`);
     return nuevoUsuario;
 };
 
@@ -257,7 +257,8 @@ function borrarUsuario(nombre, email){
                 if (indice !== -1) {
                     usuarioBorrado = usuarios[indice];
                     usuarios.splice(indice, 1);
-                    //encontro el usuario y lo eliminó; salgo de la funcion
+                    //encontro el usuario y lo eliminó; informo y salgo de la funcion
+                    console.log(`El usuario ${usuarioBorrado.nombre} con id ${usuarioBorrado.id} ha sido eliminado correctamente. `);
                     return usuarioBorrado;
                 };
             } else {
@@ -292,18 +293,20 @@ function prestarLibro(idLibro, idUsuario){
                 if (libros[i].disponible) {
                     libros[i].disponible = false
                 } else {
-                    //el libro no está disponible para préstamo
+                    //el libro no está disponible para préstamo; salgo de la función
                     console.log("El libro solicitado no se encuentra disponible actualmente.");
                     return
                 }
             };
         };
-        //usuario
+        //El libro está disponible, chequeo si el usuario existe
         for (let i=0 ; i<usuarios.length; i++){
+            // si existe, se hace el prestamo
             if (usuarios[i].id === idUsuario){
                 usuarios[i].librosPrestados.push(idLibro);
+                console.log(`El prestamo se realizó correctamente.`);
             };
-        }
+        };
     } else {
         console.log("Alguno de los valores ingresados es incorrecto.");
         return;
@@ -323,7 +326,6 @@ function devolverLibro(idLibro, idUsuario){
         for (let i=0; i<libros.length; i++){
             if (libros[i].id === idLibro){
                 libros[i].disponible = true;
-                //console.log(libros[i]);
             };
         };
         //usuario
@@ -333,13 +335,13 @@ function devolverLibro(idLibro, idUsuario){
                 let indice = usuarios[i].librosPrestados.indexOf(idLibro);
                 //lo elimino
                 usuarios[i].librosPrestados.splice(indice, 1);
-                //console.log(usuarios[i].librosPrestados);
+                console.log(`La devolución se realizó correctamente.`);
             };
         };
     } else {
         console.log("Alguno de los valores ingresados es incorrecto. El usuario con dicho id no tiene ese libro.");
         return;
-    };
+    };console.log(`El prestamo se realizó correctamente.`);
 };
 
 
@@ -594,6 +596,12 @@ function menuPrincipal(){
         case 1:
             //Agregar Libro
             let id = parseInt(prompt("Ingrese el id del libro: "));
+            // Chequeo que el id ingresado no exista todavía
+            while (libros.some(libro => libro.id === id)) {
+                console.log(`El id ${id} ya existe. Por favor, ingrese otro.`);
+                // Vuelve a pedir al usuario que ingrese otro id
+                id = parseInt(prompt("Ingrese el id del libro: "));
+            };
             let titulo = prompt("Ingrese el título del libro: ");
             let autor = prompt("Ingrese el autor: ");
             let anio= parseInt(prompt("Ingrese el año de publicación: "));
